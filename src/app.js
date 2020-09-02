@@ -1,6 +1,6 @@
 import express from "express";
 import routes from "./routes/api/v1/index";
-import databaseConfig from "./config/database";
+import databaseConfig from "./app/config/database";
 import mongoose from "mongoose";
 
 class App {
