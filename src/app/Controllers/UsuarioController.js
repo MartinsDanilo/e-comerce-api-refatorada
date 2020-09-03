@@ -2,14 +2,61 @@ import Usuario from "../model/Usuario";
 import * as Yup from "yup";
 
 class UsuarioController {
+  async show(req, res) {
+
+    return res.send("ok")
+
+  }
   async index(req, res) {
+    const schema = Yup.object().shape({
+      email: Yup.string().email().required(),
+    });
+
+    const camposValidos = await schema.isValid(req.body);
+
+    if (!camposValidos) {
+      return res.status(400).json({
+        error: "Preencha os campos corretamente!",
+      });
+    }
+
     const {
-      nome
+      email
     } = req.body;
 
-    return res.json({
-      nome,
+    const usuario = await Usuario.findOne({
+      email
     });
+
+    debugger
+
+    console.log("usuario ", usuario)
+
+    if (!usuario) {
+      return res.status(400).json({
+        erro: "Usuario nao cadastrado"
+      });
+    }
+
+    try {
+      const {
+        nome,
+        email,
+        loja
+      } = usuario;
+
+      return res.json({
+        nome,
+        email,
+        loja
+      });
+
+    } catch (error) {
+
+      return res.status(500).json({
+        erro: "error"
+      })
+    }
   }
 
   // POST /registrar
@@ -77,36 +124,33 @@ class UsuarioController {
     } = req.body;
 
     const usuario = await Usuario.findOne({
-      _id: req.userId
-    })
+      _id: req.userId,
+    });
 
     const senhaCorreta = await usuario.checaSenha(senhaHash);
 
     if (!senhaCorreta) {
       return res.status(400).json({
-        erro: "Senha incorreta"
-      })
+        erro: "Senha incorreta",
+      });
     }
     const emailExistente = await Usuario.findOne({
-      email
+      email,
     });
 
     if (emailExistente) {
       return res.status(400).json({
-        erro: "Email ja cadastrado!"
-      })
+        erro: "Email ja cadastrado!",
+      });
     }
     try {
       const usuario = await Usuario.findOneAndUpdate(req.userId, req.body, {
-        new: true
+        new: true,
       });
 
       return res.send(usuario);
-
     } catch (error) {
-
-      return res.send(error)
-
+      return res.send(error);
     }
   }
 }
