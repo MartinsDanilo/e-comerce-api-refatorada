@@ -53,56 +53,60 @@ class UsuarioController {
     });
   }
 
-  // POST /registrar
   async update(req, res) {
     const schema = Yup.object().shape({
       nome: Yup.string().required(),
       email: Yup.string().email().required(),
       senhaHash: Yup.string().required(),
-      confirmarSenha: Yup.string().when("senha", (senha, field) =>
-        senha ? field.required().oneOf([Yup.ref("senha")]) : field
+      confirmarSenha: Yup.string().when("senhaHash", (senhaHash, field) =>
+        senhaHash ? field.required().oneOf([Yup.ref("senhaHash")]) : field
       ),
     });
 
-    if (!(await schema.isValid(req.body))) {
+    const camposValidos = await schema.isValid(req.body);
+
+    if (!camposValidos) {
       return res.status(400).json({
-        error: "A validação falhou!"
+        error: "Preencha os campos corretamente!",
       });
     }
 
     const {
+      senhaHash,
       email
     } = req.body;
 
-    const UsuarioExistente = await Usuario.findOne({
+    const usuario = await Usuario.findOne({
+      _id: req.userId
+    })
+
+    const senhaCorreta = await usuario.checaSenha(senhaHash);
+
+    if (!senhaCorreta) {
+      return res.status(400).json({
+        erro: "Senha incorreta"
+      })
+    }
+    const emailExistente = await Usuario.findOne({
       email
     });
 
-    if (UsuarioExistente) {
+    if (emailExistente) {
       return res.status(400).json({
         erro: "Email ja cadastrado!"
       })
     }
-
     try {
-      const {
-        senhaHash
-      } = await Usuario.findOne({
-        email
-      });
-
-      if (!senhaHash) {
-        return res.status(400).json({
-          erro: "Senha incoreta!"
-        })
-      }
       const usuario = await Usuario.findOneAndUpdate(req.userId, req.body, {
         new: true
       });
+
       return res.send(usuario);
 
     } catch (error) {
-      return res.status(500);
+
+      return res.send(error)
+
     }
   }
 }

@@ -13,7 +13,7 @@ routes.get("/console", UsuarioController.index);
 routes.post("/create", UsuarioController.store);
 
 
-routes.get("/update", Middleware, UsuarioController.update);
+routes.put("/update", Middleware, UsuarioController.update);
 
 
 module.exports = routes;
