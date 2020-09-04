@@ -1,4 +1,6 @@
 import express from "express";
+import validate from "express-validation";
+import Youch from "youch";
 import routes from "./routes/api/v1/index";
 import databaseConfig from "./app/config/database";
 import mongoose from "mongoose";
@@ -9,6 +11,7 @@ class App {
     this.database();
     this.middlewares();
     this.routes();
+    this.exception();
   }
 
   database() {
@@ -30,6 +33,23 @@ class App {
   }
   routes() {
     this.server.use(routes);
+  }
+
+  exception() {
+    this.server.use(async (err, req, res, next) => {
+      if (err instanceof validate.ValidationError) {
+        return res.status(err.status).json(err);
+      }
+      if (process.env.NODE_ENV !== 'production') {
+        const youch = new Youch(err);
+        return res.json(await youch.toJSON())
+      }
+      return res
+        .status(err.server || 500)
+        .json({
+          error: "Erro insterno do servidor"
+        });
+    });
   }
 }
 export default new App().server;

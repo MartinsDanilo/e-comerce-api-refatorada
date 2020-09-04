@@ -1,7 +1,7 @@
 {
 
   "editor.suggestSelection": "first",
-  "editor.fontSize": 14,
+  "editor.fontSize": 13,
   //"vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "workbench.colorTheme": "Viow Arabian - Mix",
   "window.zoomLevel": 0,

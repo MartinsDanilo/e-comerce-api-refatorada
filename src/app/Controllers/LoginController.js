@@ -1,37 +1,51 @@
 import * as Yup from "yup";
-import Usuario from "../models/Usuario";
+import Usuario from "../model/Usuario";
 
 class LoginController {
   async store(req, res) {
-
     const {
-      email
+      email,
+      senha
     } = req.body;
 
-    const {
-      id
-    } = Usuario.findOne({
+    const usuario = await Usuario.findOne({
       email
     })
 
-    debugger;
+    const comparaSenha = await usuario.checaSenha(senha);
 
-    console.log("Id do token", userId)
+    if (!comparaSenha) {
+      return res.status(400).json({
+        erro: "Senha incorreta!"
+      })
+    }
 
-    const token = JwtHelper.sign(id)
+    return res.json("Senha correta")
 
-
-    debugger;
-
-    return res.json({
-      usuario: {
-        id,
-        nome,
-        email,
-      },
-      // gerando um token no momento do cadastro. O mesmo não fica armazenado
-      token,
-    });
   }
 }
+
 export default new LoginController();
+
+// const {
+//   email,
+//   nome
+// } = req.body;
+
+// const senha = 12345;
+
+
+// debugger
+
+// const usuario = await Usuario.findOne({
+//   email
+// });
+
+// const testesenha = await usuario.checaSenha(senha);
+
+// debugger
+
+
+// return res.json(
+//   testesenha
+// )
