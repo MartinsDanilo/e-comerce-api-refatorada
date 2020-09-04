@@ -1,16 +1,50 @@
 {
+
   "editor.suggestSelection": "first",
   "editor.fontSize": 14,
-  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-  "workbench.colorTheme": "Dracula",
+  //"vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "workbench.colorTheme": "Viow Arabian - Mix",
   "window.zoomLevel": 0,
   "editor.fontFamily": "Fira Code",
   "editor.fontLigatures": true,
   "terminal.integrated.fontFamily": "monospace",
   "workbench.iconTheme": "material-icon-theme",
-  "prettier.eslintIntegration": true,
+  //"prettier.eslintIntegration": true,
   "editor.formatOnSave": true,
   "terminal.integrated.fontSize": 15,
+
+  "[markdown]": {
+    "editor.quickSuggestions": true
+  },
+
   "editor.renderLineHighlight": "gutter",
-  "eslint.validate": ["language:javascript"]
+  "eslint.validate": [
+    "language:javascript"
+  ],
+  "editor.tokenColorCustomizations": {
+    "[Viow Arabian - Mix]": {
+      "textMateRules": [{
+        "scope": [
+          "support.variable.property.js",
+          "variable.other.property.js",
+          "entity.name.type.js"
+        ],
+        "settings": {
+          "foreground": "#e057b7",
+          "fontStyle": "bold underline",
+        },
+      }],
+
+    },
+    "comments": {
+      "foreground": "#883edd",
+      "fontStyle": "italic"
+    },
+
+    "strings": {
+      "foreground": "#dd3e3e",
+      "fontStyle": "italic"
+
+    }
+  },
 }
