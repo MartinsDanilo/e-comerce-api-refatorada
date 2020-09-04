@@ -3,8 +3,9 @@ import * as Yup from "yup";
 
 class UsuarioController {
   async show(req, res) {
+    const usuario = await Usuario.find({}, ["nome", "email", "loja"]);
 
-    return res.send("ok")
+    return res.json(usuario)
 
   }
   async index(req, res) {
