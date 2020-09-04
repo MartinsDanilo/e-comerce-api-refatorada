@@ -111,6 +111,7 @@ class UsuarioController {
         senhaHash ? field.required().oneOf([Yup.ref("senhaHash")]) : field
       ),
     });
+    
 
     const camposValidos = await schema.isValid(req.body);
 
