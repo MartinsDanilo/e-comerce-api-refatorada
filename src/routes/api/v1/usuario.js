@@ -9,10 +9,9 @@ const routes = new Router();
 
 console.log("Entrando no V1 Usuario")
 
-routes.get("/console", UsuarioController.index);
+routes.get("/", Middleware, UsuarioController.show);
+routes.get("/", Middleware, UsuarioController.index);
 routes.post("/create", UsuarioController.store);
-
-
 routes.put("/update", Middleware, UsuarioController.update);
 
 

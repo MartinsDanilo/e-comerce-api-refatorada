@@ -73,7 +73,6 @@ UsuarioSchema.statics = {
         expiresIn: authConfig.ttl,
       }
     )
-
   },
 };
 
