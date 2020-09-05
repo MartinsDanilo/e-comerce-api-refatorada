@@ -1,5 +1,4 @@
 {
-
   "editor.suggestSelection": "first",
   "editor.fontSize": 13,
   //"vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
@@ -18,23 +17,22 @@
   },
 
   "editor.renderLineHighlight": "gutter",
-  "eslint.validate": [
-    "language:javascript"
-  ],
+  "eslint.validate": ["language:javascript"],
   "editor.tokenColorCustomizations": {
     "[Viow Arabian - Mix]": {
-      "textMateRules": [{
-        "scope": [
-          "support.variable.property.js",
-          "variable.other.property.js",
-          "entity.name.type.js"
-        ],
-        "settings": {
-          "foreground": "#e057b7",
-          "fontStyle": "bold",
-        },
-      }],
-
+      "textMateRules": [
+        {
+          "scope": [
+            "support.variable.property.js",
+            "variable.other.property.js",
+            "entity.name.type.js"
+          ],
+          "settings": {
+            "foreground": "#e057b7",
+            "fontStyle": "bold"
+          }
+        }
+      ]
     },
     "comments": {
       "foreground": "#883edd",
@@ -44,7 +42,6 @@
     "strings": {
       "foreground": "#dd3e3e",
       "fontStyle": "italic"
-
     }
-  },
+  }
 }

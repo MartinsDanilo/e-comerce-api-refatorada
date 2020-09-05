@@ -83,9 +83,5 @@ UsuarioSchema.methods = {
   },
 };
 
-// UsuarioSchema.methods.checaSenha = function (senha) {
-//   return bcrypt.compare(senha, this.senhaHash);
-// }
-
 //Product é o Model
 module.exports = mongoose.model("Usuario", UsuarioSchema);
