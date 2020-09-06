@@ -7,6 +7,6 @@ const routes = new Router();
 console.log("Entrando no v1 index");
 
 routes.use("/usuario", require("./usuario"));
-routes.use("/usuario", require("./login"));
+routes.use(require("./login"));
 
 export default routes;

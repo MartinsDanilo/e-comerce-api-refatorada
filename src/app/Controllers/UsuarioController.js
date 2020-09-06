@@ -2,29 +2,16 @@ import Usuario from "../model/Usuario";
 import * as Yup from "yup";
 
 class UsuarioController {
-  async show(req, res) {
+  async index(req, res) {
     const usuario = await Usuario.find({}, ["nome", "email", "loja"]);
 
     return res.json(usuario);
   }
-  async index(req, res) {
-    const schema = Yup.object().shape({
-      email: Yup.string().email().required(),
-    });
+  async show(req, res) {
 
-    const camposValidos = await schema.isValid(req.body);
-
-    if (!camposValidos) {
-      return res.status(400).json({
-        error: "Preencha os campos corretamente!",
-      });
-    }
-
-    const { email } = req.body;
-
-    const usuario = await Usuario.findOne({
-      email,
-    });
+    const usuario = await Usuario.findById(
+      req.userId,
+    );
 
     if (!usuario) {
       return res.status(400).json({
@@ -33,10 +20,16 @@ class UsuarioController {
     }
 
     try {
-      const { nome, email, loja } = usuario;
+      const {
+        nome,
+        email,
+        permissao,
+        loja
+      } = usuario;
 
       return res.json({
         nome,
+        permissao,
         email,
         loja,
       });
@@ -52,9 +45,10 @@ class UsuarioController {
     const schema = Yup.object().shape({
       nome: Yup.string().required(),
       email: Yup.string().email().required(),
-      senhaHash: Yup.string().required(),
-      confirmarSenha: Yup.string().when("senhaHash", (senhaHash, field) =>
-        senhaHash ? field.required().oneOf([Yup.ref("senhaHash")]) : field
+      nome: Yup.string().required(),
+      senha: Yup.string().required(),
+      confirmarSenha: Yup.string().when("senha", (senha, field) =>
+        senha ? field.required().oneOf([Yup.ref("senha")]) : field
       ),
     });
 
@@ -66,7 +60,9 @@ class UsuarioController {
       });
     }
 
-    const { email } = req.body;
+    const {
+      email
+    } = req.body;
 
     const usuario = await Usuario.findOne({
       email,
@@ -86,7 +82,9 @@ class UsuarioController {
         token: Usuario.geratoken(usuario),
       });
     } catch (error) {
-      return res.status(500).json({ erro: "Erro interno do servidor" });
+      return res.status(500).json({
+        erro: "Erro interno do servidor"
+      });
     }
   }
 
@@ -94,9 +92,9 @@ class UsuarioController {
     const schema = Yup.object().shape({
       nome: Yup.string().required(),
       email: Yup.string().email().required(),
-      senhaHash: Yup.string().required(),
-      confirmarSenha: Yup.string().when("senhaHash", (senhaHash, field) =>
-        senhaHash ? field.required().oneOf([Yup.ref("senhaHash")]) : field
+      senha: Yup.string().required(),
+      confirmarSenha: Yup.string().when("senha", (senha, field) =>
+        senha ? field.required().oneOf([Yup.ref("senha")]) : field
       ),
     });
 
@@ -108,40 +106,53 @@ class UsuarioController {
       });
     }
 
-    const { senhaHash, email } = req.body;
+    const {
+      senha,
+      email
+    } = req.body;
 
-    const usuario = await Usuario.findOne({
-      _id: req.userId,
-    });
+    const usuario = await Usuario.findById(req.userId);
 
     if (!usuario) {
-      return res.status(400).json({ erro: "Usuario não cadastrado!" });
+      return res.status(400).json({
+        erro: "Usuario não cadastrado!"
+      });
     }
 
-    const senhaCorreta = await usuario.checaSenha(senhaHash);
+    if (usuario.email !== email) {
+      const usuarioExistente = await Usuario.findOne({
+        email
+      }, );
+
+      debugger
+
+      if (usuarioExistente) {
+        return res.status(400).json({
+          error: 'Usuario ja existe.'
+        });
+      }
+    }
+
+    const senhaCorreta = await usuario.checaSenha(senha);
 
     if (!senhaCorreta) {
       return res.status(400).json({
         erro: "Senha incorreta",
       });
     }
-    const emailExistente = await Usuario.findOne({
-      email,
-    });
 
-    if (emailExistente) {
-      return res.status(400).json({
-        erro: "Email ja cadastrado!",
-      });
-    }
     try {
       const usuario = await Usuario.findOneAndUpdate(req.userId, req.body, {
         new: true,
       });
 
-      return res.send(usuario);
+      return res.json({
+        usuario,
+        token: Usuario.geratoken(usuario),
+      });
+
     } catch (error) {
-      return res.send(error);
+      return res.json(error);
     }
   }
 
@@ -162,25 +173,31 @@ class UsuarioController {
       });
     }
 
-    const { senha, email } = req.body;
+    const {
+      senha
+    } = req.body;
 
-    const usuario = await Usuario.findById({ _id: req.userId });
+    const usuario = await Usuario.findById(req.userId);
 
     debugger;
 
     if (!usuario) {
-      return res.status(400).json({ erro: "Usuario não existe!" });
+      return res.status(400).json({
+        erro: "Usuario não existe!"
+      });
     }
-
-    debugger;
 
     const confirmaSenha = await usuario.checaSenha(senha);
 
     if (!confirmaSenha) {
-      return res.status(400).json({ erro: "Senha incorreta!" });
+      return res.status(400).json({
+        erro: "Senha incorreta!"
+      });
     }
 
-    return usuario.remove({});
+    usuario.remove();
+
+    return res.json(usuario)
   }
 }
 

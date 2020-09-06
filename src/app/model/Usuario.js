@@ -4,7 +4,6 @@ import uniqueValidator from "mongoose-unique-validator";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import authConfig from "../config/secret";
-import { templateSettings } from "lodash";
 
 const UsuarioSchema = new mongoose.Schema(
   {
