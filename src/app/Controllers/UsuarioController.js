@@ -45,7 +45,7 @@ class UsuarioController {
     const schema = Yup.object().shape({
       nome: Yup.string().required(),
       email: Yup.string().email().required(),
-      nome: Yup.string().required(),
+      loja: Yup.string().required(),
       senha: Yup.string().required(),
       confirmarSenha: Yup.string().when("senha", (senha, field) =>
         senha ? field.required().oneOf([Yup.ref("senha")]) : field
@@ -82,8 +82,9 @@ class UsuarioController {
         token: Usuario.geratoken(usuario),
       });
     } catch (error) {
+      debugger
       return res.status(500).json({
-        erro: "Erro interno do servidor"
+        erro: `${error}`
       });
     }
   }
