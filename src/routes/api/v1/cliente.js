@@ -12,5 +12,7 @@ const routes = new Router();
 // - index - show - store - update - delete
 
 routes.post("/cliente", handle(ClienteController.store));
+routes.get("/cliente/:id", handle(ClienteController.show));
+routes.put("/cliente/:id", handle(ClienteController.update));
 
 module.exports = routes;

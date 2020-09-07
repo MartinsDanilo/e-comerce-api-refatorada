@@ -50,10 +50,10 @@ UsuarioSchema.plugin(uniqueValidator, {
 });
 
 UsuarioSchema.pre("save", async function (next) {
-  if (!this.isModified("senhaHash")) {
+  if (!this.isModified("senha")) {
     return next();
   }
-  this.senhaHash = await bcrypt.hash(this.senhaHash, 8);
+  this.senha = await bcrypt.hash(this.senha, 8);
 });
 
 UsuarioSchema.statics = {
@@ -75,9 +75,9 @@ UsuarioSchema.statics = {
 
 UsuarioSchema.methods = {
   checaSenha(senha) {
-    return bcrypt.compare(senha, this.senhaHash);
+    console.log("Passanndo aqui")
+    return bcrypt.compare(senha, this.senha);
   },
 };
 
-//Product é o Model
-module.exports = mongoose.model("Usuario", UsuarioSchema);
+export default mongoose.model("Usuario", UsuarioSchema);

@@ -1,10 +1,14 @@
   import mongoose from "mongoose";
-  import Cliente from "../model/Cliente";
 
-  const Usuario = mongoose.model("Usuario");
+  import Cliente from "../model/Cliente";
+  import Usuario from "../model/Usuario";
 
   class ClienteController {
     async store(req, res) {
+
+      // const {
+      //   loja
+      // } = req.query;
 
       const {
         nome,
@@ -13,19 +17,15 @@
         telefones,
         endereco,
         dataDeNascimento,
-        senhaHash,
+        senha,
         loja
       } = req.body;
-
-      //   const {
-      //     loja
-      //   } = req.query;
 
       const usuario = await Usuario.create({
         nome,
         email,
         loja,
-        senhaHash,
+        senha,
       });
 
       const cliente = await Cliente.create({
@@ -35,16 +35,57 @@
         endereco,
         loja,
         dataDeNascimento,
-        usuario: usuario._id
+        usuario: usuario.id
       });
-
-      debugger
 
       return res.send({
         cliente: Object.assign({}, cliente._doc, {
           email: usuario.email
         })
       });
+    }
+
+    async show(req, res) {
+
+      const cliente = await Cliente.findOne({
+        usuario: req.params.id,
+        loja: req.query.loja
+      }).populate({
+        path: "usuario",
+        // select: "-cnpj -hash"
+      });
+
+      return res.json(cliente);
+    }
+
+    async update(req, res) {
+
+
+
+      const cliente = await Cliente.findOne({
+        usuario: req.params.id
+      }).populate("usuario");
+
+
+
+      if (!cliente) {
+        return res.status(400).json({
+          error: "Cliente não existe."
+        })
+      }
+      try {
+
+        await Usuario.findOneAndUpdate(req.body.id, req.body)
+
+        const cliente = await Cliente.findOneAndUpdate(req.body.id, req.body, {
+          new: true,
+        }).populate("usuario");
+
+        return res.json(cliente);
+
+      } catch (error) {
+        return res.json(error);
+      }
     }
   }
 

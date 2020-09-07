@@ -180,7 +180,6 @@ class UsuarioController {
 
     const usuario = await Usuario.findById(req.userId);
 
-    debugger;
 
     if (!usuario) {
       return res.status(400).json({

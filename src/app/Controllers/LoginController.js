@@ -16,14 +16,21 @@ class LoginController {
       });
     }
 
-    const { email, senha } = req.body;
+    const {
+      email,
+      senha
+    } = req.body;
 
-    const usuario = await Usuario.findOne({ email });
+    const usuario = await Usuario.findOne({
+      email
+    });
 
     if (!usuario) {
-      return res.status(400).json({ erro: "Usuario não cadastrado!" });
+      return res.status(400).json({
+        erro: "Usuario não cadastrado!"
+      });
     }
-
+    debugger
     const comparaSenha = await usuario.checaSenha(senha);
 
     if (!comparaSenha) {
