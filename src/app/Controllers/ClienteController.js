@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 import Cliente from "../model/Cliente";
 import Usuario from "../model/Usuario";
 
@@ -57,34 +55,32 @@ class ClienteController {
   }
 
   async update(req, res) {
-    const cliente = await Cliente.findOne({
+    const clienteExistente = await Cliente.findOne({
       usuario: req.params.id,
     }).populate("usuario");
 
-    await cliente.usuario.save();
 
-    debugger;
-
-    if (!cliente) {
+    if (!clienteExistente) {
       return res.status(400).json({
         error: "Cliente não existe.",
       });
     }
-    try {
-      await Usuario.findOneAndUpdate(req.body.id, req.body);
-      const cliente = await Cliente.findOneAndUpdate(req.param.id, req.body, {
-        new: true,
-      }).populate("usuario");
 
-      return res.json(cliente);
-    } catch (error) {
-      return res.json(error);
-    }
+    await Usuario.findOneAndUpdate(req.param.id, req.body, {
+      new: true,
+    })
+
+    const cliente = await Cliente.findOneAndUpdate(req.param.id, req.body, {
+      new: true,
+    }).populate("usuario");
+
+    return res.json(cliente);
+
   }
   async remove(req, res) {
-    const cliente = await Cliente.findOne({ usuario: req.params.id }).populate(
-      "usuario"
-    );
+    const cliente = await Cliente.findOne({
+      usuario: req.params.id,
+    }).populate("usuario");
 
     await cliente.usuario.remove();
 

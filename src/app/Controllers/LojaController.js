@@ -1,7 +1,5 @@
 import Loja from "../model/Loja";
-import {
-  connection
-} from "mongoose";
+
 class LojaController {
   async index(req, res) {
     const loja = await Loja.find({}).select("_id nome cnpj email telefones endereco");

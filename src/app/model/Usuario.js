@@ -16,7 +16,7 @@ const UsuarioSchema = new mongoose.Schema({
     unique: true,
     required: [true, "não pode ficar vazio."],
     index: true,
-    match: [/\S+@\S+\.\S+/, "é inválido."],
+    //match: [/\S+@\S+\.\S+/, "é inválido."],
   },
   loja: {
     type: Schema.Types.ObjectId,
