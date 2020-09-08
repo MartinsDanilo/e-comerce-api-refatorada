@@ -61,18 +61,20 @@ class ClienteController {
       usuario: req.params.id,
     }).populate("usuario");
 
+    await cliente.usuario.save();
+
+    debugger;
+
     if (!cliente) {
       return res.status(400).json({
         error: "Cliente não existe.",
       });
     }
     try {
-      //await Usuario.findOneAndUpdate(req.body.id, req.body);
-      const cliente = await Cliente.findOneAndUpdate(req.body.id, req.body, {
+      await Usuario.findOneAndUpdate(req.body.id, req.body);
+      const cliente = await Cliente.findOneAndUpdate(req.param.id, req.body, {
         new: true,
       }).populate("usuario");
-
-      await cliente.usuario.save();
 
       return res.json(cliente);
     } catch (error) {
