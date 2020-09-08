@@ -1,9 +1,7 @@
 //arquivo router de usuario
-import {
-  Router
-} from "express";
+import { Router } from "express";
 
-import handle from "express-async-handler"
+import handle from "express-async-handler";
 
 import ClienteController from "../../../app/Controllers/ClienteController";
 
@@ -14,5 +12,6 @@ const routes = new Router();
 routes.post("/cliente", handle(ClienteController.store));
 routes.get("/cliente/:id", handle(ClienteController.show));
 routes.put("/cliente/:id", handle(ClienteController.update));
+routes.delete("/cliente/:id", handle(ClienteController.remove));
 
 module.exports = routes;
