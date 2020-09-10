@@ -11,5 +11,6 @@ const routes = new Router();
 
 routes.post("/produto", handle(ProdutoController.store));
 routes.put("/produto/:id", handle(ProdutoController.update));
+routes.delete("/produto/:id", handle(ProdutoController.remove));
 
 module.exports = routes;

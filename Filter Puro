@@ -1,0 +1,30 @@
+
+
+  async update(req, res) {
+
+    const categoria = "5f58cdf991f93a3b2c6a75d7"; //Frutas
+    const produto = await Produto.findById("5f593b138d1e960c10933ec3"); //Pera
+
+    const oldCategoria = await Categoria.findById("5f57cec82cdd2c3c30b7b7a5") //Legumes
+    const newCategoria = await Categoria.findById("5f58cdf991f93a3b2c6a75d7") ////Frutas
+
+    if (oldCategoria && newCategoria) {
+      debugger
+      oldCategoria.produtos = oldCategoria.produtos
+        .filter(item => item.toString() !== "5f593b138d1e960c10933ec3");//Pera
+      newCategoria.produtos.push("5f593b138d1e960c10933ec3")//Pera
+      produto.categoria = categoria;
+      await oldCategoria.save();
+      await newCategoria.save();
+    } else if (newCategoria) {
+      newCategoria.produtos.push("5f593b138d1e960c10933ec3");//Pera
+      produto.categoria = categoria;
+      await newCategoria.save();
+      debugger
+
+      return res.json("OK");
+    }
+  }
+}
+
+export default new ProdutoController();

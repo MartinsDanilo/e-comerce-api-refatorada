@@ -12,5 +12,7 @@ routes.use(require("./cliente"));
 routes.use(require("./loja"));
 routes.use(require("./categorias"));
 routes.use(require("./produto"));
+routes.use(require("./avaliacao"));
+routes.use(require("./variacao"));
 
 export default routes;

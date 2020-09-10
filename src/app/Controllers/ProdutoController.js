@@ -1,5 +1,6 @@
 import Produto from "../model/Produto";
 import Categoria from "../model/Categoria";
+import * as Yup from "yup";
 //import Categoria from "../model/Categoria";
 import Avaliacao from "../model/Avaliacao";
 import Variacao from "../model/Variacao";
@@ -63,7 +64,17 @@ class ProdutoController {
     return res.json(produto);
   }
 
-  async update(req, res) {
+  async update(req, res, next) {
+    const schema = Yup.object().shape({
+      titulo: Yup.string().required(),
+      descricao: Yup.string().email().required(),
+      disponibilidade: Yup.string().required(),
+      categoria: Yup.string().required(),
+      preco: Yup.string().required(),
+      promocao: Yup.string().required(),
+      sku: Yup.string().required(),
+    });
+
     const {
       titulo,
       descricao,
@@ -74,75 +85,74 @@ class ProdutoController {
       promocao,
       sku,
     } = req.body;
+
     const { loja } = req.query;
 
-    const produto = await Produto.findById(req.params.id);
+    try {
+      const produto = await Produto.findById(req.params.id);
+      if (!produto)
+        return res.status(400).send({
+          error: "Produto não encontrado.",
+        });
 
-    if (!produto) {
-      return res.status(400).json({
-        error: "Produto não encontrado.",
+      produto.titulo = titulo;
+      produto.descricao = descricao;
+      produto.disponibilidade = disponibilidade;
+      produto.fotos = fotos;
+      produto.preco = preco;
+      produto.promocao = promocao;
+      produto.sku = sku;
+
+      if (categoria && categoria.toString() !== produto.categoria.toString()) {
+        const oldCategoria = await Categoria.findById(produto.categoria);
+        const newCategoria = await Categoria.findById(categoria);
+
+        if (oldCategoria && newCategoria) {
+          oldCategoria.produtos = oldCategoria.produtos.filter(
+            (item) => item.toString() !== produto._id.toString()
+          );
+          newCategoria.produtos.push(produto._id);
+          produto.categoria = categoria;
+          await oldCategoria.save();
+          await newCategoria.save();
+        } else if (newCategoria) {
+          newCategoria.produtos.push(produto._id);
+          produto.categoria = categoria;
+          await newCategoria.save();
+        }
+      }
+
+      await produto.save();
+
+      return res.send({
+        produto,
       });
+    } catch (e) {
+      next(e);
     }
+  }
+  // DELETE :/id - remove
+  async remove(req, res) {
+    const { loja } = req.query;
 
-    produto.titulo = titulo;
-    produto.descricao = descricao;
-    produto.disponibilidade = disponibilidade;
-    if (fotos) produto.fotos = fotos;
-    produto.preco = preco;
-    produto.promocao = promocao;
-    produto.sku = sku;
+    try {
+      const produto = await Produto.findOne({ _id: req.params.id, loja });
+      if (!produto)
+        return res.status(400).send({ error: "Produto não encontrado." });
 
-    debugger;
-
-    if (categoria && categoria.toString() !== produto.categoria.toString()) {
-      const oldCategoria = await Categoria.findById(produto.categoria);
-      const newCategoria = await Categoria.findById(categoria);
-
-      if (oldCategoria && newCategoria) {
-        oldCategoria.produtos = oldCategoria.produtos.filter(
-          (item) => item.toString() !== produto._id.toString()
+      const categoria = await Categoria.findById(produto.categoria);
+      if (categoria) {
+        categoria.produtos = categoria.produtos.filter(
+          (item) => item !== produto._id
         );
-        newCategoria.produtos.push(produto._id);
-        produto.categoria = categoria;
-        await oldCategoria.save();
-        await newCategoria.save();
-      } else if (newCategoria) {
-        newCategoria.produtos.push(produto._id);
-        produto.categoria = categoria;
-        await newCategoria.save();
+        await categoria.save();
       }
+
+      await produto.remove();
+      return res.json({ deleted: true });
+    } catch (erro) {
+      return res.json({ erro });
     }
-
-    await produto.save();
-
-    /*
-
-    const produto = await Produto.findOneAndUpdate(req.param.id, req.body, {
-      new: true,
-    });
-
-    debugger;
-    if (categoria && categoria.toString() !== produto.categoria.toString()) {
-      const oldCategoria = await Categoria.findById(produto.categoria);
-      const newCategoria = await Categoria.findById(categoria);
-
-      if (oldCategoria && newCategoria) {
-        oldCategoria.produtos = oldCategoria.produtos.filter(
-          (item) => item.toString() !== produto._id.toString()
-        );
-
-        await oldCategoria.save();
-        await newCategoria.save();
-        debugger;
-      } else if (newCategoria) {
-        newCategoria.produtos.push(produto._id);
-        produto.categoria = categoria;
-        await newCategoria.save();
-      }
-    }
-
-    return res.json(produto);
-    */
   }
 }
 
