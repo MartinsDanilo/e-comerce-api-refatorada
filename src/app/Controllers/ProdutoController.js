@@ -39,7 +39,9 @@ class ProdutoController {
       sku,
     } = req.body;
 
-    const { loja } = req.query;
+    const {
+      loja
+    } = req.query;
 
     const produto = await Produto.create({
       titulo,
@@ -86,7 +88,9 @@ class ProdutoController {
       sku,
     } = req.body;
 
-    const { loja } = req.query;
+    const {
+      loja
+    } = req.query;
 
     try {
       const produto = await Produto.findById(req.params.id);
@@ -133,12 +137,19 @@ class ProdutoController {
   }
   // DELETE :/id - remove
   async remove(req, res) {
-    const { loja } = req.query;
+    const {
+      loja
+    } = req.query;
 
     try {
-      const produto = await Produto.findOne({ _id: req.params.id, loja });
+      const produto = await Produto.findOne({
+        _id: req.params.id,
+        loja
+      });
       if (!produto)
-        return res.status(400).send({ error: "Produto não encontrado." });
+        return res.status(400).send({
+          error: "Produto não encontrado."
+        });
 
       const categoria = await Categoria.findById(produto.categoria);
       if (categoria) {
@@ -149,9 +160,13 @@ class ProdutoController {
       }
 
       await produto.remove();
-      return res.json({ deleted: true });
+      return res.json({
+        deleted: true
+      });
     } catch (erro) {
-      return res.json({ erro });
+      return res.json({
+        erro
+      });
     }
   }
 }
