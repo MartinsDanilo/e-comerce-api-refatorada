@@ -18,7 +18,6 @@ class UsuarioController {
         erro: "Usuario nao cadastrado",
       });
     }
-
     try {
       const {
         nome,
@@ -42,24 +41,6 @@ class UsuarioController {
 
   // POST /registrar
   async store(req, res) {
-    const schema = Yup.object().shape({
-      nome: Yup.string().required(),
-      email: Yup.string().email().required(),
-      loja: Yup.string().required(),
-      senha: Yup.string().required(),
-      confirmarSenha: Yup.string().when("senha", (senha, field) =>
-        senha ? field.required().oneOf([Yup.ref("senha")]) : field
-      ),
-    });
-
-    const camposValidos = await schema.isValid(req.body);
-
-    if (!camposValidos) {
-      return res.status(400).json({
-        error: "Preencha os campos corretamente!",
-      });
-    }
-
     const {
       email
     } = req.body;
@@ -67,6 +48,8 @@ class UsuarioController {
     const usuario = await Usuario.findOne({
       email,
     });
+
+    debugger
 
     if (usuario) {
       return res.status(400).json({
@@ -90,23 +73,6 @@ class UsuarioController {
   }
 
   async update(req, res) {
-    const schema = Yup.object().shape({
-      nome: Yup.string().required(),
-      email: Yup.string().email().required(),
-      senha: Yup.string().required(),
-      confirmarSenha: Yup.string().when("senha", (senha, field) =>
-        senha ? field.required().oneOf([Yup.ref("senha")]) : field
-      ),
-    });
-
-    const camposValidos = await schema.isValid(req.body);
-
-    if (!camposValidos) {
-      return res.status(400).json({
-        error: "Preencha os campos corretamente!",
-      });
-    }
-
     const {
       senha,
       email
@@ -158,22 +124,6 @@ class UsuarioController {
   }
 
   async remove(req, res) {
-    const schema = Yup.object().shape({
-      email: Yup.string().email().required(),
-      senha: Yup.string().required(),
-      confirmarSenha: Yup.string().when("senha", (senha, field) =>
-        senha ? field.required().oneOf([Yup.ref("senha")]) : field
-      ),
-    });
-
-    const camposValidos = await schema.isValid(req.body);
-
-    if (!camposValidos) {
-      return res.status(400).json({
-        error: "Preencha os campos corretamente!",
-      });
-    }
-
     const {
       senha
     } = req.body;

@@ -1,30 +1,30 @@
 const Joi = require('joi')
-
+debugger
+console.log("passei aqui")
 module.exports = {
-  show: {
-    params: {
-      id: Joi.string().alphanum().length(24).required()
-    }
-  },
   store: {
-    body: {
+    body: Joi.object({
       nome: Joi.string().required(),
       email: Joi.string().email().required(),
-      password: Joi.string().required(),
-      loja: Joi.string().alphanum().length(24).required()
-    }
+      loja: Joi.string().required(),
+      senha: Joi.string()
+        .regex(/^[a-zA-Z0-9]{3,30}$/)
+        .required(),
+      confirmarSenha: Joi.any()
+        .equal(Joi.ref('senha'))
+        .required(),
+    })
   },
   update: {
-    body: {
+    body: Joi.object({
       nome: Joi.string().optional(),
       email: Joi.string().email().optional(),
-      password: Joi.string().optional()
-    }
+      senha: Joi.string()
+        .regex(/^[a-zA-Z0-9]{3,30}$/)
+        .required(),
+      confirmarSenha: Joi.any()
+        .equal(Joi.ref('senha'))
+        .required(),
+    })
   },
-  login: {
-    body: {
-      email: Joi.string().email().required(),
-      password: Joi.string().required().min(6)
-    }
-  }
 };

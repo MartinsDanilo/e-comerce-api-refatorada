@@ -16,15 +16,26 @@ console.log("Entrando no V1 Usuario");
 
 // - index - show - store - update - delete
 
-routes.post("/registrar", validate(validators.usuarioValidation.store), handle(UsuarioController.store));
+routes.post("/registrar",
+
+  handle(UsuarioController.store));
 
 routes.use(Middleware);
 
-//validate(validators.User),
+routes.get("/show",
+  
+  handle(UsuarioController.show));
 
-routes.get("/show", handle(UsuarioController.show));
-routes.get("/", handle(UsuarioController.index));
-routes.put("/", handle(UsuarioController.update));
-routes.delete("/", handle(UsuarioController.remove));
+routes.get("/",
+  
+  handle(UsuarioController.index));
+
+routes.put("/",
+  
+  handle(UsuarioController.update));
+
+routes.delete("/",
+  
+  handle(UsuarioController.remove));
 
 module.exports = routes;

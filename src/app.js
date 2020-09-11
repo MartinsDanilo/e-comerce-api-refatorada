@@ -37,8 +37,11 @@ class App {
 
   exception() {
     this.server.use(async (err, req, res, next) => {
+      debugger
       if (err instanceof validate.ValidationError) {
-        return res.status(err.status).json(err);
+        console.log("Deu erro aqui *********************>", err)
+        return res.status(400).json(err);
+
       }
       if (process.env.NODE_ENV !== 'production') {
         const youch = new Youch(err);
