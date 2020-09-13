@@ -2,7 +2,7 @@
   "editor.suggestSelection": "first",
   "editor.fontSize": 11,
   //"vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-  "workbench.colorTheme": "Hyper Dracula",
+  "workbench.colorTheme": "Hyper Dracula",,
   "window.zoomLevel": 0,
   "editor.fontFamily": "Fira Code",
   "editor.fontLigatures": true,
